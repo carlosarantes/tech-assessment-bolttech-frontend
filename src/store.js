@@ -10,6 +10,7 @@ export default new Vuex.Store({
         name : null,
         user_id : null
       },
+      projectCreationErrors : [],
       newTask : {
         description : null,
         project_id : null,
@@ -50,26 +51,35 @@ export default new Vuex.Store({
         registrationErrors(state){
             return state.registration.errors;
         },
+        projectCreationErrors(state) {
+            return state.projectCreationErrors;
+        },
         userData(state) {
             return state.userData;
+        },
+        userIsLogged(state) {
+            return state.auth.logged;
         }
     },
     actions:{
         async login({ state, commit }) {
             try {
-                const result = await axios.post('http://localhost:3338/api/v1/users/login', { 
+                const user = {
                     email : state.auth.email,
                     password : state.auth.password
-                });
+                };
 
-                if (result.data.user) {
-                    commit('setUserData', result.data.user);
-                }
-                
-                if (result.data.token) {
-                    commit('setToken', result.data.token);
+                const result = await axios.post('http://localhost:3338/api/v1/users/login', user);
+                const data = result.data;
+
+                if (data.user && data.token) {
+                    commit('setUserData', data.user);
+                    commit('setToken', data.token);
                     commit('setLogged', true);
                     commit('setAuthErrors', []);
+
+                    localStorage.setItem('jwt', data.token);
+                    localStorage.setItem('userData', JSON.stringify(data.user));
                 } else {
                     commit('setToken', null);
                     commit('setLogged', false);
@@ -97,6 +107,9 @@ export default new Vuex.Store({
                     commit('setToken', data.token);
                     commit('setLogged', true);
                     commit('setRegistrationErrors', []);
+
+                    localStorage.setItem('jwt', data.token);
+                    localStorage.setItem('userData', JSON.stringify(data.user));
                 } else {
                     commit('setToken', null);
                     commit('setLogged', false);
@@ -113,6 +126,34 @@ export default new Vuex.Store({
                 }
 
                 commit('setRegistrationErrors', errors);
+            }
+        },
+        async createProject({ state }) {
+            try {
+                const jwt = state.auth.jwt || "";
+
+                console.log(jwt)
+
+                const user = state.userData;
+                const project = state.newProject; 
+
+                project.user_id = user.id || null;
+
+                const result = await axios.post('http://localhost:3338/api/v1/projects', project, {
+                    headers : {
+                        'Authorization' : "Bearer " + jwt
+                    }
+                });
+                console.log(result)
+            } catch (e) {
+                const data = e.response.data; 
+                let errors = []; 
+                if(data.message) {
+                    errors.push(data.message);
+                }
+                if(data.errors) { 
+                    errors = errors.concat(data.errors);
+                }
             }
         }
     },
@@ -132,6 +173,9 @@ export default new Vuex.Store({
         setRegistrationPassword(state, password) {
             state.registration.user.password = password;
         },
+        setProjectCreationErrors(state, projectCreationErrors) {
+            state.projectCreationErrors = projectCreationErrors;
+        },
         setToken(state, token) {
             state.auth.jwt = token;
         },
@@ -148,6 +192,9 @@ export default new Vuex.Store({
             state.userData.id = user.id;
             state.userData.name = user.name;
             state.userData.email = user.email;
+        },
+        setNewProjectName(state, name) {
+            state.newProject.name = name;
         }
     }
 });

@@ -65,7 +65,8 @@ import { mapGetters, mapState } from 'vuex'
 export default {
     computed: {
     ...mapGetters([
-      'authErrors'
+      'authErrors',
+      'userIsLogged'
     ]),
     ...mapState({
       email: state => state.auth.email,
@@ -80,7 +81,12 @@ export default {
       this.$store.commit('setAuthPassword', e.target.value)
     },
     login() {
-      this.$store.dispatch('login');
+      this.$store.dispatch('login').then(() => {
+        console.log(this.userIsLogged)
+          if (this.userIsLogged && this.authErrors.length == 0) {
+            this.$router.replace('/dashboard');
+          }
+        });
     }
   }
 }

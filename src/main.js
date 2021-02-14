@@ -22,7 +22,6 @@ const router = new VueRouter({
   ]
 });
 
-
 new Vue({
   store,
   router,

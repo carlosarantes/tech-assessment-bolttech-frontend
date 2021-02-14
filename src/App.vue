@@ -8,8 +8,16 @@
  
 export default {
   name: 'App',
- 
-  mounted() {    
+  beforeMount() {
+    const token = localStorage.getItem('jwt');
+    const sUserData = localStorage.getItem('userData');
+
+    if (token && sUserData) {
+      const userData = JSON.parse(sUserData);
+      this.$store.commit('setUserData', userData);
+      this.$store.commit('setToken', token);
+      // this.$router.replace('/dashboard');
+    }
   }
 }
 </script>

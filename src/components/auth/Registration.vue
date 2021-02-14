@@ -74,7 +74,8 @@ import { mapGetters, mapState } from 'vuex';
 export default {
   computed: {
     ...mapGetters([
-      'registrationErrors'
+      'registrationErrors',
+      'userIsLogged'
     ]),
     ...mapState({
         name : state => state.registration.email,
@@ -93,7 +94,11 @@ export default {
         this.$store.commit('setRegistrationPassword', e.target.value);
       },
       register() {
-        this.$store.dispatch('register');
+        this.$store.dispatch('register').then(() => {
+          if (this.userIsLogged && this.registrationErrors.length == 0) {
+            this.$router.replace('/dashboard');
+          }
+        });
       }
     }
 }
