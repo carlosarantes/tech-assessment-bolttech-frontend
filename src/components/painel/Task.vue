@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="flex mb-4 items-center">
+        <div class="flex mb-4 items-center" v-tooltip.bottom-start="tooltipMessage">
             <label class="inline-flex items-center mt-3">
                 <input 
                     type="checkbox" 
@@ -14,6 +14,7 @@
                     :class="task.finished_at ? `line-through` : ''"
                     >{{ task.description }}</span>
             </label>
+
             <button 
                 v-if="!task.finished_at"
                 @click="removeTask"
@@ -32,6 +33,22 @@
 <script>
 export default {
     props: [ 'task' ],
+    data : () => {
+        return {
+            created_at : null,
+            finished_at : null
+        }
+    },
+    computed : {
+        tooltipMessage: () => { 
+            let message = "<b>Started at: </b> 20/12/2020";
+            const varr = true;
+            if(varr) {
+                message += "<br> <b>Finished at:</b>  20/12/2020";
+            }
+            return { content: message, html: true };
+        }
+    },
     methods : {
         removeTask() {
             this.$store.dispatch('removeTask', { task : this.task });
@@ -46,6 +63,14 @@ export default {
                 this.$store.dispatch('finishTask', { task : this.task });
             }
         }
+    },
+    mounted() {
+        this.created_at = this.task.created_at;
+        this.finished_at = this.task.finished_at;
+    },
+    updated(){
+        this.created_at = this.task.created_at;
+        this.finished_at = this.task.finished_at;
     }
 }
 </script>
