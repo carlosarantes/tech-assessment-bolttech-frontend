@@ -128,12 +128,9 @@ export default new Vuex.Store({
                 commit('setRegistrationErrors', errors);
             }
         },
-        async createProject({ state }) {
+        async createProject({ state, commit }) {
             try {
                 const jwt = state.auth.jwt || "";
-
-                console.log(jwt)
-
                 const user = state.userData;
                 const project = state.newProject; 
 
@@ -144,7 +141,13 @@ export default new Vuex.Store({
                         'Authorization' : "Bearer " + jwt
                     }
                 });
-                console.log(result)
+
+                const data = result.data; 
+                if (data.project) {
+                    commit('addProject', data.project);
+                }
+
+                commit('setProjectCreationErrors', []);
             } catch (e) {
                 const data = e.response.data; 
                 let errors = []; 
@@ -154,6 +157,8 @@ export default new Vuex.Store({
                 if(data.errors) { 
                     errors = errors.concat(data.errors);
                 }
+                
+                commit('setProjectCreationErrors', errors);
             }
         }
     },
@@ -195,6 +200,9 @@ export default new Vuex.Store({
         },
         setNewProjectName(state, name) {
             state.newProject.name = name;
+        },
+        addProject(state, project) {
+            state.projects.push(project);
         }
     }
 });

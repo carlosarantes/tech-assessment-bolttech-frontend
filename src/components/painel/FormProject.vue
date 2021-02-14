@@ -38,6 +38,9 @@
                   </div> -->
                 </div>
               </div>
+              <div class="px-4 py-5 bg-white sm:p-6" v-if="projectCreationErrors && projectCreationErrors.length > 0">
+                <p class="text-red-600" v-for="(error, index) in projectCreationErrors" v-bind:key="index">- {{ error }}</p>
+              </div>
               <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
                 <button 
                     type="button" 
@@ -60,7 +63,7 @@
   export default {
       computed: {
         ...mapGetters([
-          'authErrors',
+          'projectCreationErrors',
           'userIsLogged'
         ]),
         ...mapState({
