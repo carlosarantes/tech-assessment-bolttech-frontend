@@ -1,7 +1,6 @@
 TODO
 
-
 - edit project
 - edit task
-- tooltip finish data with status terminated
 - loading
+- sweet alert
