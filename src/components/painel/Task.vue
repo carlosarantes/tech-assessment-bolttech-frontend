@@ -6,6 +6,8 @@
                     type="checkbox" 
                     class="form-checkbox h-5 w-5 text-blue-600" 
                     :checked="task.finished_at"
+                    :disabled="task.finished_at"
+                    :readonly="task.finished_at"
                     @change="finishTask($event)">
                 <span 
                     class="ml-2 text-gray-700"
@@ -35,6 +37,11 @@ export default {
             this.$store.dispatch('removeTask', { task : this.task });
         },
         finishTask(e) {
+            if (this.task.finished_at) {
+                e.preventDefault();
+                return false;
+            }
+
             if (e.target.checked) {
                 this.$store.dispatch('finishTask', { task : this.task });
             }

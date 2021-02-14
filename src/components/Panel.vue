@@ -74,7 +74,7 @@
       <FormProject />
       <div class="px-4 py-6 sm:px-0">
         <div class="border-4 border-dashed border-gray-200 rounded-lg">
-            <div class="projects-list" v-if="projects && projects.length > 0">
+            <div class="projects-list lg:grid md:grid md:grid-cols-3 md:gap-6" v-if="projects && projects.length > 0">
               <Project v-for="project in projects" :key="project.id" :project="project" />
             </div>
             <div class="landing-title p-8" v-else>
