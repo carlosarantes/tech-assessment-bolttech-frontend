@@ -313,6 +313,32 @@ export default new Vuex.Store({
                 Vue.$vToastify.error("It was not possible to delete the project.", "Oops!"); 
                 commit('setIsLoading', false);
             }
+        },
+        async updateProject({ state, commit }, payload) {
+            try {
+                commit('setIsLoading', true);
+                const jwt = state.auth.jwt || "";
+
+                const project = {
+                    id : payload.project.id,
+                    name : payload.changes.name,
+                };
+
+                const url = 'http://localhost:3338/api/v1/projects/' + project.id;
+                await axios.put(url, project, {
+                    headers : {
+                        'Authorization' : "Bearer " + jwt
+                    }
+                })
+
+                commit('setIsLoading', false);
+                commit('updateProjectName', project);
+                Vue.$vToastify.success("The project was updated successfully.", "Yeaaah!"); 
+            } catch (e) {
+                console.log(e);
+                Vue.$vToastify.error("It was not possible to update the project.", "Oops!"); 
+                commit('setIsLoading', false);
+            }
         }
     },
     mutations: {
@@ -419,6 +445,17 @@ export default new Vuex.Store({
         },
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
+        },
+        updateProjectName(state, project) {
+            const { id, name } = project;
+
+            const projectIndex = state.projects.findIndex(p => {
+                return p.id == id;
+            });
+
+            if (projectIndex >= 0) {
+                state.projects[projectIndex].name = name;
+            }
         }
     }
 });
