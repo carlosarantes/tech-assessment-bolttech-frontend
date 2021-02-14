@@ -31,21 +31,20 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
     props: [ 'task' ],
-    data : () => {
-        return {
-            created_at : null,
-            finished_at : null
-        }
-    },
     computed : {
-        tooltipMessage: () => { 
-            let message = "<b>Started at: </b> 20/12/2020";
-            const varr = true;
-            if(varr) {
-                message += "<br> <b>Finished at:</b>  20/12/2020";
+        tooltipMessage: function () { 
+            let message = "<b>Started at: </b> " + moment(this.task.createdAt).format('DD/MM/YYYY H:m:ss');
+            if(this.task.finished_at) {
+                message += "<br><b>Finished at: </b> " + moment(this.task.finished_at).format('DD/MM/YYYY H:m:ss');
+                message += "<br><b>Status: </b>Finished (You can't delete or update it anymore)";
+            } else {
+                message += "<br><b>Status: </b>Running";
             }
+
             return { content: message, html: true };
         }
     },
@@ -63,14 +62,6 @@ export default {
                 this.$store.dispatch('finishTask', { task : this.task });
             }
         }
-    },
-    mounted() {
-        this.created_at = this.task.created_at;
-        this.finished_at = this.task.finished_at;
-    },
-    updated(){
-        this.created_at = this.task.created_at;
-        this.finished_at = this.task.finished_at;
     }
 }
 </script>
