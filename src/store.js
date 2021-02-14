@@ -27,6 +27,14 @@ export default new Vuex.Store({
           jwt: null,
           logged : false,
           authErros : [ ]
+      },
+      registration : {
+          user : {
+            name : null,
+            email : null,
+            password : null
+          },
+          errors : []
       }
     },
     getters:{
@@ -38,6 +46,9 @@ export default new Vuex.Store({
         },
         authErrors(state){
             return state.auth.authErros;
+        },
+        registrationErrors(state){
+            return state.registration.errors;
         },
         userData(state) {
             return state.userData;
@@ -76,8 +87,33 @@ export default new Vuex.Store({
                 commit('setAuthErrors', errors);
             }
         },
-        register() {
+        async register({ state, commit }) {
+            try {
+                const result = await axios.post('http://localhost:3338/api/v1/users/registration', state.registration.user);
+                const data = result.data;
+                
+                if (data.user && data.token) {
+                    commit('setUserData', data.user);
+                    commit('setToken', data.token);
+                    commit('setLogged', true);
+                    commit('setRegistrationErrors', []);
+                } else {
+                    commit('setToken', null);
+                    commit('setLogged', false);
+                }
 
+            } catch (e) {
+                const data = e.response.data; 
+                let errors = []; 
+                if(data.message) {
+                    errors.push(data.message);
+                }
+                if(data.errors) { 
+                    errors = errors.concat(data.errors);
+                }
+
+                commit('setRegistrationErrors', errors);
+            }
         }
     },
     mutations: {
@@ -87,6 +123,15 @@ export default new Vuex.Store({
         setAuthPassword(state, password) {
             state.auth.password = password;
         },
+        setRegistrationName(state, name) {
+            state.registration.user.name = name;
+        },
+        setRegistrationEmail(state, email) {
+            state.registration.user.email = email;
+        },
+        setRegistrationPassword(state, password) {
+            state.registration.user.password = password;
+        },
         setToken(state, token) {
             state.auth.jwt = token;
         },
@@ -95,6 +140,9 @@ export default new Vuex.Store({
         },
         setAuthErrors(state, errors) {
             state.auth.authErros = errors;
+        },
+        setRegistrationErrors(state, errors) {
+            state.registration.errors = errors;
         },
         setUserData(state, user) {
             state.userData.id = user.id;

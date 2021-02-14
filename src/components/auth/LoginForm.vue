@@ -39,6 +39,7 @@
         <p class="text-red-600" v-for="(error, index) in authErrors" v-bind:key="index">- {{ error }}</p>
       </div>
       <div> 
+        <router-link to="/registration"  class="text-purple-700 text-opacity-75 text-center	">Sing Up Now!</router-link>
         <button 
           type="button" 
           class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
