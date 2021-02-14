@@ -1,7 +1,19 @@
 <template>
     <div class="bg-white rounded shadow p-4 m-2 w-full lg:w-3/3 lg:max-w-lg">
         <div class="mb-4">
-            <h1 class="text-grey-darkest">{{ project.name }}</h1>
+            <h1 class="text-grey-darkest">
+                {{ project.name }}
+                <button 
+                    type="button"
+                    @click="deleteProject"
+                    class="inline-flex justify-center 
+                            py-2 px-4 border border-transparent 
+                            shadow-sm text-sm font-medium rounded-md 
+                            text-white bg-red-600 hover:bg-red-700
+                             focus:outline-none focus:ring-2 focus:ring-offset-2 
+                             focus:ring-red-500">Delete
+                </button>
+            </h1>
             <div class="flex mt-4">
                 <input 
                     v-model="newTaskDescription"
@@ -40,6 +52,9 @@ export default {
     methods : {
         addTask() {
             this.$store.dispatch('addTask', { newTaskDescription : this.newTaskDescription, project : this.project })
+        },
+        deleteProject() {
+            this.$store.dispatch('deleteProject', { project : this.project });
         }
     }
 }

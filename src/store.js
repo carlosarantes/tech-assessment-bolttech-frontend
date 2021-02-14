@@ -247,6 +247,23 @@ export default new Vuex.Store({
             } catch (e) {
                 console.log(e);
             }
+        },
+        async deleteProject({ state, commit }, payload) {
+            try {
+                const { project } = payload;
+                const jwt = state.auth.jwt || "";
+
+                const url = 'http://localhost:3338/api/v1/projects/' + project.id;
+                await axios.delete(url, {
+                    headers : {
+                        'Authorization' : "Bearer " + jwt
+                    }
+                });
+
+                commit('deleteProject', project);
+            } catch (e) {
+                console.log(e);
+            }
         }
     },
     mutations: {
@@ -340,6 +357,15 @@ export default new Vuex.Store({
                 if (taskIndex >= 0) {
                     state.projects[projectIndex].tasks[taskIndex].finished_at = moment().format();
                 }
+            }
+        },
+        deleteProject(state, project) {
+            const projectIndex = state.projects.findIndex(p => {
+                return p.id == project.id;
+            });
+
+            if (projectIndex >= 0) {
+                state.projects.splice(projectIndex, 1);
             }
         }
     }
