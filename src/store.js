@@ -12,6 +12,7 @@ export default new Vuex.Store({
         name : null,
         user_id : null
       },
+      isLoading : false,
       projectCreationErrors : [],
       newTask : {
         description : null,
@@ -41,6 +42,9 @@ export default new Vuex.Store({
       }
     },
     getters:{
+        isLoading(state) {
+            return state.isLoading;
+        },
         authEmail(state) {
             return state.auth.email;
         },
@@ -69,6 +73,8 @@ export default new Vuex.Store({
     actions:{
         async login({ state, commit }) {
             try {
+                commit('setIsLoading', true);
+
                 const user = {
                     email : state.auth.email,
                     password : state.auth.password
@@ -89,6 +95,8 @@ export default new Vuex.Store({
                     commit('setToken', null);
                     commit('setLogged', false);
                 }
+
+                commit('setIsLoading', false);
             } catch (e) {
                 const data = e.response.data; 
                 let errors = []; 
@@ -100,10 +108,13 @@ export default new Vuex.Store({
                 }
 
                 commit('setAuthErrors', errors);
+                commit('setIsLoading', false);
             }
         },
         async register({ state, commit }) {
             try {
+                commit('setIsLoading', true);
+
                 const result = await axios.post('http://localhost:3338/api/v1/users/registration', state.registration.user);
                 const data = result.data;
                 
@@ -119,7 +130,7 @@ export default new Vuex.Store({
                     commit('setToken', null);
                     commit('setLogged', false);
                 }
-
+                commit('setIsLoading', false);
             } catch (e) {
                 const data = e.response.data; 
                 let errors = []; 
@@ -131,10 +142,13 @@ export default new Vuex.Store({
                 }
 
                 commit('setRegistrationErrors', errors);
+                commit('setIsLoading', false);
             }
         },
         async createProject({ state, commit }) {
             try {
+                commit('setIsLoading', true);
+
                 const jwt = state.auth.jwt || "";
                 const user = state.userData;
                 const project = state.newProject; 
@@ -153,6 +167,8 @@ export default new Vuex.Store({
                 }
 
                 commit('setProjectCreationErrors', []);
+                Vue.$vToastify.success("Project successfully created.", "Yeaaah!");
+                commit('setIsLoading', false);
             } catch (e) {
                 const data = e.response.data; 
                 let errors = []; 
@@ -164,10 +180,14 @@ export default new Vuex.Store({
                 }
                 
                 commit('setProjectCreationErrors', errors);
+                Vue.$vToastify.error("It was not possible to create the project.", "Oops!"); 
+                commit('setIsLoading', false);
             }
         },
         async fetchUserProjects({ state, commit }) {
             try {
+                commit('setIsLoading', true);
+
                 const jwt = state.auth.jwt || "";
                 const user = state.userData;
 
@@ -186,12 +206,17 @@ export default new Vuex.Store({
                 if (data.projects) {
                     commit('setProjects', data.projects);
                 }
+                commit('setIsLoading', false);
             } catch(e) {
-                console.log('asas ');
+                console.log(e);
+                Vue.$vToastify.error("It was not possible to get your projects.", "Oops!"); 
+                commit('setIsLoading', false);
             }
         },
         async addTask({ state, commit }, payload){
             try {
+                commit('setIsLoading', true);
+
                 const jwt = state.auth.jwt || "";
                 const project = payload.project || null;
 
@@ -209,13 +234,20 @@ export default new Vuex.Store({
                 const data = result.data;
                 if (data.task) {
                     commit('addTaskToProject', { project, task : data.task });
+                    Vue.$vToastify.success("Task has been successfully added.", "Nice :)");
                 }
+
+                commit('setIsLoading', false);
             } catch (e) {
                 console.log(e);
+                Vue.$vToastify.error("It was not possible to add a task to the project.", "Oops!"); 
+                commit('setIsLoading', false);
             }
         },
         async removeTask({ state, commit }, payload) {
             try {
+                commit('setIsLoading', true);
+
                 const { task } = payload;
                 const jwt = state.auth.jwt || "";
               
@@ -227,12 +259,18 @@ export default new Vuex.Store({
                 });
 
                 commit('removeTask', task);
+                Vue.$vToastify.success("Task has been successfully removed.", "Uoou..");
+                commit('setIsLoading', false);
             } catch (e) {
                 console.log(e);
+                Vue.$vToastify.error("It was not possible to remove the task.", "Oops!"); 
+                commit('setIsLoading', false);
             }
         },
         async finishTask({ state, commit }, payload) {
             try {
+                commit('setIsLoading', true);
+
                 const { task } = payload;
                 const jwt = state.auth.jwt || "";
 
@@ -244,12 +282,18 @@ export default new Vuex.Store({
                 });
 
                 commit('finishTask', task);
+                Vue.$vToastify.success("Nice, it looks like you finished the task.", "Congrats :)");
+                commit('setIsLoading', false);
             } catch (e) {
                 console.log(e);
+                Vue.$vToastify.error("It was not possible to finish the task.", "Oops!"); 
+                commit('setIsLoading', false);
             }
         },
         async deleteProject({ state, commit }, payload) {
             try {
+                commit('setIsLoading', true);
+
                 const { project } = payload;
                 const jwt = state.auth.jwt || "";
 
@@ -261,8 +305,13 @@ export default new Vuex.Store({
                 });
 
                 commit('deleteProject', project);
+                Vue.$vToastify.success("Project successfully deleted.", "Goodbye ...");
+
+                commit('setIsLoading', false);
             } catch (e) {
                 console.log(e);
+                Vue.$vToastify.error("It was not possible to delete the project.", "Oops!"); 
+                commit('setIsLoading', false);
             }
         }
     },
@@ -367,6 +416,9 @@ export default new Vuex.Store({
             if (projectIndex >= 0) {
                 state.projects.splice(projectIndex, 1);
             }
+        },
+        setIsLoading(state, isLoading) {
+            state.isLoading = isLoading;
         }
     }
 });

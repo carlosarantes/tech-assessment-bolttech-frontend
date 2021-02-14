@@ -2,5 +2,3 @@ TODO
 
 - edit project
 - edit task
-- loading
-- sweet alert

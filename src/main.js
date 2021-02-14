@@ -7,8 +7,11 @@ import App from './App.vue'
 
 import VueRouter from 'vue-router'
 import VTooltip from 'v-tooltip'
+import VueToastify from "vue-toastify";
 import 'v-tooltip/dist/v-tooltip.css'
 
+
+Vue.use(VueToastify);
 Vue.use(VTooltip)
 Vue.use(VueRouter);
 

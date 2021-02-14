@@ -15,7 +15,9 @@
     "moment": "^2.29.1",
     "v-tooltip": "^3.0.0-alpha.20",
     "vue": "^2.6.11",
+    "vue-loading-overlay": "^3.4.2",
     "vue-router": "^3.5.1",
+    "vue-toastify": "^1.8.0",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
