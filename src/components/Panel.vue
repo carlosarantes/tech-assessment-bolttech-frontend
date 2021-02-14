@@ -55,9 +55,7 @@
         </div>
         <div class="mt-3 px-2 space-y-1">
           <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Your Profile</a>
-
           <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Settings</a>
-
           <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Sign out</a>
         </div>
       </div>
@@ -73,33 +71,34 @@
   </header>
   <main>
     <div class="max-w-7x2 mx-auto py-6 sm:px-6 lg:px-2">
-      <!-- Replace with your content -->
-<FormProject />
-
+      <FormProject />
       <div class="px-4 py-6 sm:px-0">
-
-       
-
         <div class="border-4 border-dashed border-gray-200 rounded-lg h-96">
-            <Project />
-             
+            <Project v-for="project in projects" :key="project.id" :project="project" />
         </div>
       </div>
-      <!-- /End replace -->
     </div>
   </main>
 </div>
 </template>
 
 <script>
+ import { mapGetters } from 'vuex'
 import Project from "./painel/Project";
 import FormProject from "./painel/FormProject";
 
-
 export default {
-components: {
+  components: {
     Project,
     FormProject
+  },
+  computed : {
+    ...mapGetters([
+        'projects'
+    ]),
+  },
+  beforeMount() {
+    this.$store.dispatch('fetchUserProjects');
   }
 }
 </script>

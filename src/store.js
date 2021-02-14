@@ -59,6 +59,9 @@ export default new Vuex.Store({
         },
         userIsLogged(state) {
             return state.auth.logged;
+        },
+        projects(state) {
+            return state.projects;
         }
     },
     actions:{
@@ -160,6 +163,54 @@ export default new Vuex.Store({
                 
                 commit('setProjectCreationErrors', errors);
             }
+        },
+        async fetchUserProjects({ state, commit }) {
+            try {
+                const jwt = state.auth.jwt || "";
+                const user = state.userData;
+
+                if (!user.id) {
+                    throw new Error("You are not logged");
+                }
+
+                const url = 'http://localhost:3338/api/v1/users/' + user.id + '/projects';
+                const result = await axios.get(url, {
+                    headers : {
+                        'Authorization' : "Bearer " + jwt
+                    }
+                });
+
+                const data = result.data;
+                if (data.projects) {
+                    commit('setProjects', data.projects);
+                }
+            } catch(e) {
+                console.log('asas ');
+            }
+        },
+        async addTask({ state, commit }, payload){
+            try {
+                const jwt = state.auth.jwt || "";
+                const project = payload.project || null;
+
+                const task = {
+                    description: payload.newTaskDescription,
+                    project_id: project.id
+                };
+
+                const result = await axios.post('http://localhost:3338/api/v1/tasks', task, {
+                    headers : {
+                        'Authorization' : "Bearer " + jwt
+                    }
+                });
+
+                const data = result.data;
+                if (data.task) {
+                    commit('addTaskToProject', { project, task : data.task });
+                }
+            } catch (e) {
+                console.log(e);
+            }
         }
     },
     mutations: {
@@ -203,6 +254,23 @@ export default new Vuex.Store({
         },
         addProject(state, project) {
             state.projects.push(project);
+        },
+        setProjects(state, projects) {
+            state.projects = projects;
+        },
+        addTaskToProject(state, payload) {
+            const { project, task } = payload;
+            const index = state.projects.findIndex(p => {
+                return p.id == project.id;
+            });
+
+            if (index >= 0) {
+                if(!state.projects[index].tasks || !Array.isArray(state.projects[index].tasks)){
+                    state.projects[index].tasks = [];
+                }
+
+                state.projects[index].tasks.push(task);
+            }
         }
     }
 });
