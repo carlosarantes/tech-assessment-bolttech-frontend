@@ -16,7 +16,10 @@
             </div>
         </div>
         <div v-if="project.tasks && project.tasks.length > 0" >
-            <Task v-for="task in project.tasks" :key="task.id" />
+            <Task v-for="task in project.tasks" :key="task.id" :task="task" />
+        </div>
+        <div v-else>
+            <p class="text-base antialiased font-semibold text-opacity-70 text-gray-600 text-center">This project has no tasks yet... Create one with the form above.</p>
         </div>
     </div>
 </template>

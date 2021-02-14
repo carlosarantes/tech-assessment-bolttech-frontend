@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from "axios";
 
+import moment from 'moment';
+
 Vue.use(Vuex);
  
 export default new Vuex.Store({
@@ -211,6 +213,40 @@ export default new Vuex.Store({
             } catch (e) {
                 console.log(e);
             }
+        },
+        async removeTask({ state, commit }, payload) {
+            try {
+                const { task } = payload;
+                const jwt = state.auth.jwt || "";
+              
+                const url = 'http://localhost:3338/api/v1/tasks/' + task.id;
+                await axios.delete(url, {
+                    headers : {
+                        'Authorization' : "Bearer " + jwt
+                    }
+                });
+
+                commit('removeTask', task);
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        async finishTask({ state, commit }, payload) {
+            try {
+                const { task } = payload;
+                const jwt = state.auth.jwt || "";
+
+                const url = 'http://localhost:3338/api/v1/tasks/' + task.id + '/finish';
+                await axios.patch(url, null, {
+                    headers : {
+                        'Authorization' : "Bearer " + jwt
+                    }
+                });
+
+                commit('finishTask', task);
+            } catch (e) {
+                console.log(e);
+            }
         }
     },
     mutations: {
@@ -270,6 +306,40 @@ export default new Vuex.Store({
                 }
 
                 state.projects[index].tasks.push(task);
+            }
+        },
+        removeTask(state, task) {
+            const { project_id } = task;
+
+            const projectIndex = state.projects.findIndex(p => {
+                return p.id == project_id;
+            });
+
+            if (projectIndex >= 0) {
+                const taskIndex = state.projects[projectIndex].tasks.findIndex(t => {
+                    return t.id == task.id;
+                });
+                
+                if (taskIndex >= 0) {
+                    state.projects[projectIndex].tasks.splice(taskIndex, 1);
+                }
+            }
+        },
+        finishTask(state, task) {
+            const { project_id } = task;
+
+            const projectIndex = state.projects.findIndex(p => {
+                return p.id == project_id;
+            });
+
+            if (projectIndex >= 0) {
+                const taskIndex = state.projects[projectIndex].tasks.findIndex(t => {
+                    return t.id == task.id;
+                });
+                
+                if (taskIndex >= 0) {
+                    state.projects[projectIndex].tasks[taskIndex].finished_at = moment().format();
+                }
             }
         }
     }

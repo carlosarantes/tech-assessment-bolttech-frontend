@@ -73,8 +73,15 @@
     <div class="max-w-7x2 mx-auto py-6 sm:px-6 lg:px-2">
       <FormProject />
       <div class="px-4 py-6 sm:px-0">
-        <div class="border-4 border-dashed border-gray-200 rounded-lg h-96">
-            <Project v-for="project in projects" :key="project.id" :project="project" />
+        <div class="border-4 border-dashed border-gray-200 rounded-lg">
+            <div class="projects-list" v-if="projects && projects.length > 0">
+              <Project v-for="project in projects" :key="project.id" :project="project" />
+            </div>
+            <div class="landing-title p-8" v-else>
+              <h3 class="text-opacity-70 text-center text-gray-500 font-bold text-xl">
+                You have no project yet :( please, create one.
+              </h3>
+            </div>
         </div>
       </div>
     </div>
