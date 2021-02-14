@@ -11,6 +11,8 @@ export default {
   name: 'App',
   components: {
     LoginForm
+  },
+  mounted() {    
   }
 }
 </script>
