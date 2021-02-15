@@ -4,6 +4,12 @@ import axios from "axios";
 
 import moment from 'moment';
 
+const API_URL = process.env.VUE_APP_API_URL || 'http://localhost:3000';
+const restApi = axios.create({
+    baseURL: API_URL,
+    timeout: 10000
+});
+
 Vue.use(Vuex);
  
 export default new Vuex.Store({
@@ -80,7 +86,7 @@ export default new Vuex.Store({
                     password : state.auth.password
                 };
 
-                const result = await axios.post('http://localhost:3338/api/v1/users/login', user);
+                const result = await restApi.post('/api/v1/users/login', user);
                 const data = result.data;
 
                 if (data.user && data.token) {
@@ -115,7 +121,7 @@ export default new Vuex.Store({
             try {
                 commit('setIsLoading', true);
 
-                const result = await axios.post('http://localhost:3338/api/v1/users/registration', state.registration.user);
+                const result = await restApi.post('/api/v1/users/registration', state.registration.user);
                 const data = result.data;
                 
                 if (data.user && data.token) {
@@ -155,7 +161,7 @@ export default new Vuex.Store({
 
                 project.user_id = user.id || null;
 
-                const result = await axios.post('http://localhost:3338/api/v1/projects', project, {
+                const result = await restApi.post('/api/v1/projects', project, {
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
@@ -197,8 +203,8 @@ export default new Vuex.Store({
                     throw new Error("You are not logged");
                 }
 
-                const url = 'http://localhost:3338/api/v1/users/' + user.id + '/projects';
-                const result = await axios.get(url, {
+                const url = '/api/v1/users/' + user.id + '/projects';
+                const result = await restApi.get(url, {
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
@@ -227,7 +233,7 @@ export default new Vuex.Store({
                     project_id: project.id
                 };
 
-                const result = await axios.post('http://localhost:3338/api/v1/tasks', task, {
+                const result = await restApi.post('/api/v1/tasks', task, {
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
@@ -255,8 +261,8 @@ export default new Vuex.Store({
                 const { task } = payload;
                 const jwt = state.auth.jwt || "";
               
-                const url = 'http://localhost:3338/api/v1/tasks/' + task.id;
-                await axios.delete(url, {
+                const url = '/api/v1/tasks/' + task.id;
+                await restApi.delete(url, {
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
@@ -278,8 +284,8 @@ export default new Vuex.Store({
                 const { task } = payload;
                 const jwt = state.auth.jwt || "";
 
-                const url = 'http://localhost:3338/api/v1/tasks/' + task.id + '/finish';
-                await axios.patch(url, null, {
+                const url = '/api/v1/tasks/' + task.id + '/finish';
+                await restApi.patch(url, null, {
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
@@ -301,8 +307,8 @@ export default new Vuex.Store({
                 const { project } = payload;
                 const jwt = state.auth.jwt || "";
 
-                const url = 'http://localhost:3338/api/v1/projects/' + project.id;
-                await axios.delete(url, {
+                const url = '/api/v1/projects/' + project.id;
+                await restApi.delete(url, {
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
@@ -328,8 +334,8 @@ export default new Vuex.Store({
                     name : payload.changes.name,
                 };
 
-                const url = 'http://localhost:3338/api/v1/projects/' + project.id;
-                await axios.put(url, project, {
+                const url = '/api/v1/projects/' + project.id;
+                await restApi.put(url, project, {
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
@@ -355,8 +361,8 @@ export default new Vuex.Store({
                     project_id : payload.task.project_id
                 };
 
-                const url = 'http://localhost:3338/api/v1/tasks/' + task.id;
-                await axios.put(url, task, {
+                const url = '/api/v1/tasks/' + task.id;
+                await restApi.put(url, task, {
                     headers : {
                        'Authorization' : "Bearer " + jwt
                     }

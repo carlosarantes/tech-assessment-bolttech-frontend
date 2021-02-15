@@ -72,6 +72,7 @@
   <main>
     <div class="max-w-7x2 mx-auto py-6 sm:px-6 lg:px-2">
       <FormProject />
+      <h4 class="text-opacity-80 text-center text-blue-500 font-semibold text-xl mt-8">Projects from {{ userData.name }}</h4>
       <div class="px-4 py-6 sm:px-0">
         <div class="border-4 border-dashed border-gray-200 rounded-lg">
             <div class="projects-list lg:grid md:grid md:grid-cols-3 md:gap-6" v-if="projects && projects.length > 0">
@@ -101,7 +102,8 @@ export default {
   },
   computed : {
     ...mapGetters([
-        'projects'
+        'projects',
+        'userData'
     ]),
   },
   beforeMount() {

@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import 'es6-promise/auto';
 
 import Vue from 'vue';
