@@ -4,6 +4,17 @@
         :can-cancel="false" 
         :is-full-page="true"></loading>
       <router-view></router-view>
+
+
+      <nav id="footer" class="bg-gray-500">
+        <div class="container mx-auto">
+          <div class="py-8 md:flex md:items-center md:justify-center">
+            <p class="text-center text-gray-50 text-base font-semibold">By Carlos Augusto Arantes</p>
+          </div>
+        </div>
+      </nav>
+
+
   </div>
 </template>
 
