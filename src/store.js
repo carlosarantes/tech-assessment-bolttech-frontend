@@ -163,7 +163,9 @@ export default new Vuex.Store({
 
                 const data = result.data; 
                 if (data.project) {
-                    commit('addProject', data.project);
+                    const project = data.project;
+                    project['tasks'] = [];
+                    commit('addProject', project);
                 }
 
                 commit('setProjectCreationErrors', []);
@@ -233,7 +235,9 @@ export default new Vuex.Store({
 
                 const data = result.data;
                 if (data.task) {
-                    commit('addTaskToProject', { project, task : data.task });
+                    const task = data.task;
+                    task['finished_at'] = null;
+                    commit('addTaskToProject', { project, task });
                     Vue.$vToastify.success("Task has been successfully added.", "Nice :)");
                 }
 
@@ -421,7 +425,7 @@ export default new Vuex.Store({
 
             if (index >= 0) {
                 if(!state.projects[index].tasks || !Array.isArray(state.projects[index].tasks)){
-                    state.projects[index].tasks = [];
+                    state.projects[index]['tasks'] = [];
                 }
 
                 state.projects[index].tasks.push(task);
@@ -457,7 +461,7 @@ export default new Vuex.Store({
                 });
                 
                 if (taskIndex >= 0) {
-                    state.projects[projectIndex].tasks[taskIndex].finished_at = moment().format();
+                    state.projects[projectIndex].tasks[taskIndex]['finished_at'] = moment().format();
                 }
             }
         },
