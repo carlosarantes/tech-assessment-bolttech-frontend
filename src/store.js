@@ -348,6 +348,7 @@ export default new Vuex.Store({
                 const task = {
                     id : payload.task.id,
                     description : payload.changes.description,
+                    project_id : payload.task.project_id
                 };
 
                 const url = 'http://localhost:3338/api/v1/tasks/' + task.id;
@@ -358,6 +359,7 @@ export default new Vuex.Store({
                 });
 
                 commit('setIsLoading', false);
+                commit('updateTaskDescription', task);
                 Vue.$vToastify.success("The task was updated successfully.", "Yeaaah!"); 
             } catch (e) {
                 console.log(e);
@@ -480,6 +482,23 @@ export default new Vuex.Store({
 
             if (projectIndex >= 0) {
                 state.projects[projectIndex].name = name;
+            }
+        },
+        updateTaskDescription(state, task) {
+            const { description, project_id } = task;
+
+            const projectIndex = state.projects.findIndex(p => {
+                return p.id == project_id;
+            });
+
+            if (projectIndex >= 0) {
+                const taskIndex = state.projects[projectIndex].tasks.findIndex(t => {
+                    return t.id == task.id;
+                });
+                
+                if (taskIndex >= 0) {
+                    state.projects[projectIndex].tasks[taskIndex].description = description;
+                }
             }
         }
     }
