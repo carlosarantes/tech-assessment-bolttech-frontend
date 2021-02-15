@@ -329,7 +329,7 @@ export default new Vuex.Store({
                     headers : {
                         'Authorization' : "Bearer " + jwt
                     }
-                })
+                });
 
                 commit('setIsLoading', false);
                 commit('updateProjectName', project);
@@ -337,6 +337,31 @@ export default new Vuex.Store({
             } catch (e) {
                 console.log(e);
                 Vue.$vToastify.error("It was not possible to update the project.", "Oops!"); 
+                commit('setIsLoading', false);
+            }
+        },
+        async updateTask({ state, commit }, payload) {
+            try {
+                commit('setIsLoading', true);
+                const jwt = state.auth.jwt || "";
+
+                const task = {
+                    id : payload.task.id,
+                    description : payload.changes.description,
+                };
+
+                const url = 'http://localhost:3338/api/v1/tasks/' + task.id;
+                await axios.put(url, task, {
+                    headers : {
+                       'Authorization' : "Bearer " + jwt
+                    }
+                });
+
+                commit('setIsLoading', false);
+                Vue.$vToastify.success("The task was updated successfully.", "Yeaaah!"); 
+            } catch (e) {
+                console.log(e);
+                Vue.$vToastify.error("It was not possible to update the task.", "Oops!"); 
                 commit('setIsLoading', false);
             }
         }
