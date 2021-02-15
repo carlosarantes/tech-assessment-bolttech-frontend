@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flex mb-4 items-center" v-tooltip.bottom-start="tooltipMessage">
-            <label class="inline-flex items-center mt-3">
+            <label class="inline-flex items-center mt-3 flex-auto ">
                 <input 
                     @dblclick="setTaskEditionMode"
                     type="checkbox" 
@@ -17,7 +17,7 @@
             </label>
 
 
-            <div v-if="!task.finished_at">
+            <div v-if="!task.finished_at" class="flex-end ">
                 <button 
                     type="button"
                 
