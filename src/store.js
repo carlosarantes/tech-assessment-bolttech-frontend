@@ -32,8 +32,8 @@ export default new Vuex.Store({
         email : null
       },
       auth : {
-          email: "bryan.watson@gmail.com",
-          password: "10203040",
+          email: null,
+          password: null,
           jwt: null,
           logged : false,
           authErros : [ ]
