@@ -3,6 +3,7 @@
         <div class="flex mb-4 items-center" v-tooltip.bottom-start="tooltipMessage">
             <label class="inline-flex items-center mt-3">
                 <input 
+                    @dblclick="setTaskEditionMode"
                     type="checkbox" 
                     class="form-checkbox h-5 w-5 text-blue-600" 
                     :checked="task.finished_at"
@@ -15,17 +16,29 @@
                     >{{ task.description }}</span>
             </label>
 
-            <button 
-                v-if="!task.finished_at"
-                @click="removeTask"
-                class="bg-grey-light hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center">
-                <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="18" height="18" 
-                    viewBox="0 0 24 24">
-                    <path d="M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z"/>
-                </svg>
-            </button>
+
+            <div v-if="!task.finished_at">
+                <button 
+                    type="button"
+                
+                    class="inline-flex justify-center py-2 px-4 mr-1
+                        border border-transparent shadow-sm text-sm 
+                        font-medium rounded-md text-white bg-gray-600 
+                        hover:bg-gray-700 focus:outline-none 
+                        focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <font-awesome-icon :icon="[ 'fas', 'edit' ]" size="lg" />
+                </button>
+                <button 
+                    type="button"
+                    @click="removeTask"
+                    class="inline-flex justify-center py-2 px-4 
+                        border border-transparent shadow-sm text-sm 
+                        font-medium rounded-md text-white bg-red-600 
+                        hover:bg-red-700 focus:outline-none 
+                        focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <font-awesome-icon :icon="[ 'fas', 'trash-alt' ]" size="lg"  />
+                </button>            
+            </div>
          </div>
     </div>
 </template>
@@ -61,6 +74,9 @@ export default {
             if (e.target.checked) {
                 this.$store.dispatch('finishTask', { task : this.task });
             }
+        },
+        setTaskEditionMode() {
+            alert('aaaaaaaaaaa')
         }
     }
 }
